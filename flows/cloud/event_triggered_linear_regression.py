@@ -10,7 +10,8 @@ DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
     libraries={
         "pandas": "1.4.2",
         "pyarrow": "11.0.0",
-        "numpy": "1.21.2",
+        #"numpy": "1.21.2",
+        "numpy": "1.22.0",
         "scikit-learn": "1.1.2",
     }
 )
@@ -22,6 +23,8 @@ class TaxiFarePrediction(FlowSpec):
         # Try to complete tasks 2 and 3 with this function doing nothing like it currently is.
         # Understand what is happening.
         # Revisit task 1 and think about what might go in this function.
+
+        df = df[~(df['trip_distance'].isnull())] # Remove missing values from dataset
 
         return df
 
@@ -37,6 +40,9 @@ class TaxiFarePrediction(FlowSpec):
         # In practice, you want split time series data in more sophisticated ways and run backtests.
         self.X = self.df["trip_distance"].values.reshape(-1, 1)
         self.y = self.df["total_amount"].values
+        print("Missing Value count is {} for X".format(sum(self.df["trip_distance"].isnull())))
+        print("Missing Value count is {} for y".format(sum(self.df["total_amount"].isnull())))
+
         self.next(self.linear_model)
 
     @step
